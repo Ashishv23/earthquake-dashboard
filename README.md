@@ -19,15 +19,15 @@ This project is part of a technical challenge to showcase frontend development s
 ## 🧰 Tech Stack
 
 | Technology            | Purpose                                      |
-|-----------------------|---------------------------------------------=|
+|-----------------------|----------------------------------------------|
 | **React + TypeScript**| Frontend framework                           |
 | **Vite**              | Fast dev server and bundler                  |
-| **Tailwind CSS**      | Responsive styling utility                   |
+| **Tailwind CSS**      | Utility-first responsive styling             |
 | **Recharts**          | Charting library (scatter plot)              |
 | **TanStack Query**    | Data fetching, caching, and loading state    |
 | **Zustand**           | Global store for chart axis selection        |
 | **React Context**     | Manage currently selected earthquake row     |
-| **Web Worker**        | Background thread to parse a large CSV file  |
+| **Web Worker**        | Background thread to parse large CSV file    |
 | **Git + GitHub**      | Version control and collaboration            |
 
 ---
