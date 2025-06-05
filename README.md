@@ -35,7 +35,7 @@ This project is part of a technical challenge to showcase frontend development s
 ## 🚀 Getting Started
 
 ```bash
-git clone [https://github.com/Ashishv23/earthquake-dashboard.git](https://github.com/Ashishv23/earthquake-dashboard.git)
+git clone https://github.com/Ashishv23/earthquake-dashboard.git
 cd earthquake-dashboard
 npm install
 npm run dev
