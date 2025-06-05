@@ -18,7 +18,7 @@ function App() {
       </h1>
       <div className="flex flex-col md:flex-row gap-4">
         <div className="md:w-1/2 w-full">
-          <ChartPanel />
+          <ChartPanel data={data ?? []} />
         </div>
         <div className="md:w-1/2 w-full">
           <DataTable data={data ?? []} />
