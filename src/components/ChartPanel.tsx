@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   ScatterChart,
   Scatter,
@@ -8,27 +7,55 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useSelectedEarthquake } from "../context/SelectedEarthquakeContext";
+import { useChartAxisStore } from "../store/useChartAxisStore";
+import type { JSX } from "react/jsx-runtime";
 
-type EarthquakeRecord = Record<string, string>;
+export interface EarthquakeRecord {
+  id: string;
+  place: string;
+  [key: string]: string;
+}
 
 interface ChartPanelProps {
   data: EarthquakeRecord[];
 }
 
+interface CustomShapeProps {
+  cx?: number;
+  cy?: number;
+  payload: {
+    id: string;
+    isSelected?: boolean;
+  };
+}
+
 const numericFields = ["mag", "depth", "latitude", "longitude"];
 
 export default function ChartPanel({ data }: ChartPanelProps) {
-  const [xField, setXField] = useState("longitude");
-  const [yField, setYField] = useState("latitude");
+  const { selected, setSelected } = useSelectedEarthquake();
+
+  const xField = useChartAxisStore((state) => state.xField);
+  const yField = useChartAxisStore((state) => state.yField);
+  const setXField = useChartAxisStore((state) => state.setXField);
+  const setYField = useChartAxisStore((state) => state.setYField);
 
   const parsedData = data
     .filter((row) => row[xField] && row[yField])
-    .map((row) => ({
-      x: parseFloat(row[xField]),
-      y: parseFloat(row[yField]),
-      id: row.id,
-      label: row.place,
-    }));
+    .map((row) => {
+      const x = parseFloat(row[xField]);
+      const y = parseFloat(row[yField]);
+      if (isNaN(x) || isNaN(y)) return null;
+
+      return {
+        x,
+        y,
+        id: row.id,
+        label: row.place,
+        isSelected: selected?.id === row.id,
+      };
+    })
+    .filter((r): r is NonNullable<typeof r> => r !== null);
 
   return (
     <div className="bg-white shadow rounded p-4 h-full">
@@ -72,7 +99,25 @@ export default function ChartPanel({ data }: ChartPanelProps) {
           <XAxis type="number" dataKey="x" name={xField} />
           <YAxis type="number" dataKey="y" name={yField} />
           <Tooltip cursor={{ strokeDasharray: "3 3" }} />
-          <Scatter name="Earthquakes" data={parsedData} fill="#3182CE" />
+          <Scatter
+            name="Earthquakes"
+            data={parsedData}
+            fill="#3182CE"
+            onClick={(e) => {
+              const match = data.find((row) => row.id === e.id);
+              if (match) {
+                setSelected(match);
+              }
+            }}
+            shape={
+              ((props: CustomShapeProps) => {
+                const { cx = 0, cy = 0, payload } = props;
+                const radius = payload.isSelected ? 8 : 4;
+                const color = payload.isSelected ? "#E53E3E" : "#3182CE";
+                return <circle cx={cx} cy={cy} r={radius} fill={color} />;
+              }) as (props: unknown) => JSX.Element
+            }
+          />
         </ScatterChart>
       </ResponsiveContainer>
     </div>
